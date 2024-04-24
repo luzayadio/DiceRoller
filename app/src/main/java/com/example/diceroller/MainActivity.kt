@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -43,8 +44,18 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun DiceWithButtonAndImage(modifier: Modifier = Modifier) {
-    var result by remember { mutableStateOf(1) }
-    val imageResource = when (result) {
+    var qtd by remember { mutableStateOf(1) }
+    var result1 by remember { mutableStateOf(1) }
+    var result2 by remember { mutableStateOf(1) }
+    val imageResource1 = when (result1) {
+        1 -> R.drawable.dice_1
+        2 -> R.drawable.dice_2
+        3 -> R.drawable.dice_3
+        4 -> R.drawable.dice_4
+        5 -> R.drawable.dice_5
+        else -> R.drawable.dice_6
+    }
+    val imageResource2 = when (result2) {
         1 -> R.drawable.dice_1
         2 -> R.drawable.dice_2
         3 -> R.drawable.dice_3
@@ -54,20 +65,42 @@ fun DiceWithButtonAndImage(modifier: Modifier = Modifier) {
     }
 
     fun changeValue() {
-        val a = result
-        result = (1..6).random()
-        if(a == result) changeValue()
+        result1 = (1..6).random()
+        if(qtd == 2)
+            result2 = (1..6).random()
+        /*if(qtd in 1..2) {
+            val a = result1
+            result1 = (1..6).random()
+            if (a == result1) changeValue()
+        }
+        if(qtd == 2) {
+            val a = result2
+            result2 = (1..6).random()
+            if (a == result2) changeValue()
+        }*/
     }
 
     Column(modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally) {
-        Image(
-            painter = painterResource(imageResource),
-            contentDescription = "$result"
-        )
+        Row {
+            Image(
+                painter = painterResource(imageResource1),
+                contentDescription = "$result1"
+            )
+            if (qtd == 2) {
+                Image(
+                    painter = painterResource(imageResource2),
+                    contentDescription = "$result2"
+                )
+            }
+        }
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = { changeValue() }) {
-            Text(stringResource(R.string.roll))
+            Text(stringResource(id = R.string.roll))
+        }
+        Spacer(modifier = Modifier.height(20.dp))
+        Button(onClick = { qtd = if(qtd == 1) 2 else 1 }) {
+            Text("${if(qtd == 1) stringResource(id = R.string.one) else stringResource(id = R.string.two)} " + stringResource(id = R.string.dices))
         }
     }
 }
